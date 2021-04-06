@@ -17,6 +17,7 @@ public class CombatSystem : MonoBehaviour
 
     public GameObject MeleeAttackButton;
     public GameObject FireballAttackButton;
+    public GameObject HealButton;
 
     public GameObject enemyMissExplanation;
     public bool FirstTimeEnemyMiss = true;
@@ -55,11 +56,13 @@ public class CombatSystem : MonoBehaviour
             Debug.Log("I am in combat");
             MeleeAttackButton.SetActive(true);
             FireballAttackButton.SetActive(true);
+            HealButton.SetActive(true);
         }
         else
         {
             MeleeAttackButton.SetActive(false);
             FireballAttackButton.SetActive(false);
+            HealButton.SetActive(false);
         }
 
         if (state == CombatState.ENEMYTURN)
@@ -120,7 +123,7 @@ public class CombatSystem : MonoBehaviour
 
                 Debug.Log("Enemy has hit");
 
-                if (player.currentHealth < 0.1f || player.currentHealth > 1f) //Player Loses
+                if (player.currentHealth < 0.1f/* || player.currentHealth > 1f*/) //Player Loses
                 {
                     Debug.Log("Has Lost");
                     LoseUI.SetActive(true);

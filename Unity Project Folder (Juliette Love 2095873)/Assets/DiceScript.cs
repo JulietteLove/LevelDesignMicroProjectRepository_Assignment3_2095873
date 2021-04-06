@@ -73,9 +73,19 @@ public class DiceScript : MonoBehaviour
         ConsoleText.text = "Enemy Turn";
     }
 
-    public void Replay() //Replay scene button
+    public void ReplayLvl1() //Replay scene button
     {
-        SceneManager.LoadScene("Game");
+        SceneManager.LoadScene("Level1");
+    }
+
+    public void ReplayLvl2() //Replay scene button
+    {
+        SceneManager.LoadScene("Level2");
+    }
+
+    public void ReplayLvl3() //Replay scene button
+    {
+        SceneManager.LoadScene("Level3");
     }
 
     void MissTextDisappear()

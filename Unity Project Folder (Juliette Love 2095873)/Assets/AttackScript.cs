@@ -20,6 +20,7 @@ public class AttackScript : MonoBehaviour
 
     public GameObject PlayerHealthGlow;
     public GameObject EnemyHealthGlow;
+    public GameObject PlayerHealGlow;
 
     public Text EnemyDamage;
     public Text PlayerDamage;
@@ -27,79 +28,105 @@ public class AttackScript : MonoBehaviour
 
     //CODE DEALING WITH PLAYER COMBAT STAGE
 
-    public void FireballButton()
+    public void HealButton()
     {
-        Enemy enemy = GameObject.FindWithTag("Enemy").GetComponent<Enemy>();
-        CombatSystem combatSystem = GameObject.FindWithTag("CombatSystem").GetComponent<CombatSystem>();
+        EnemyChange enemyChange = GameObject.FindWithTag("EnemyChange").GetComponent<EnemyChange>();
 
-        FireballBurn = Random.Range(1, 6);
-
-        EnemyHealthGlow.SetActive(true);
-        Invoke("EnemyGlowDisappear", 0.5f);
-
-        EnemyDamage.text = "4";
-        Invoke("DamageDisappear", 2f);
-
-        ScreenshakeController screenShakeController = GameObject.FindWithTag("MainCamera").GetComponent<ScreenshakeController>();
-        StartCoroutine(screenShakeController.CameraShake(0.15f, 0.1f));
-
-        if (FireballBurn >= 3 && PlayerCanAttack == true)
+        if (enemyChange.IsLevel1 == true || enemyChange.IsLevel3 == true)//This code will only run during lvl 1 and 3
         {
-            Debug.Log("BURN TEXT HAS RUN");
-
-            enemy.currentHealth -= 0.4f;
-            enemyHealth.fillAmount = enemy.currentHealth / 1;
-
             Player player = GameObject.FindWithTag("Player").GetComponent<Player>();
             DiceScript diceScript = GameObject.FindWithTag("Dice").GetComponent<DiceScript>();
 
-            player.currentHealth -= 0.2f;
+            player.currentHealth += 0.5f;
             diceScript.playerHealth.fillAmount = player.currentHealth / 1;
 
-            //ConsoleText.text = "You were burned";
-            BurnText.text = "You were burned";
-            Invoke("DamageDisappear", 2f);
-
-            PlayerDamage.text = "2";
-            Invoke("DamageDisappear", 2f);
-
-            PlayerHealthGlow.SetActive(true);
+            PlayerHealGlow.SetActive(true);
             Invoke("PlayerGlowDisappear", 0.5f);
 
-            if (enemy.currentHealth < 0.1f || enemy.currentHealth > 1f) //Player Wins
-            {
-                Debug.Log("Has Won");
-                WinUI.SetActive(true);
-            }
-
-            if (player.currentHealth < 0.1f || player.currentHealth > 1f) //Player Loses
-            {
-                Debug.Log("Has Lost");
-                LoseUI.SetActive(true);
-            }
-
+            Invoke("EnemyTurnChange", 2f);
             PlayerCanAttack = false;
         }
-        
-        if (FireballBurn < 3 && PlayerCanAttack == true)
+    }
+
+    public void FireballButton()
+    {
+        EnemyChange enemyChange = GameObject.FindWithTag("EnemyChange").GetComponent<EnemyChange>();
+
+        if (enemyChange.IsLevel2 == true || enemyChange.IsLevel3 == true) //This code only runs during lvl 2 and 3
         {
-            enemy.currentHealth -= 0.4f;
-            enemyHealth.fillAmount = enemy.currentHealth / 1;
+            Enemy enemy = GameObject.FindWithTag("Enemy").GetComponent<Enemy>();
+            CombatSystem combatSystem = GameObject.FindWithTag("CombatSystem").GetComponent<CombatSystem>();
 
-            //ConsoleText.text = "You were not burned";
+            FireballBurn = Random.Range(1, 6);
 
+            EnemyHealthGlow.SetActive(true);
+            Invoke("EnemyGlowDisappear", 0.5f);
 
+            EnemyDamage.text = "4";
+            Invoke("DamageDisappear", 2f);
 
-            if (enemy.currentHealth < 0.1f || enemy.currentHealth > 1f) //Player Wins
+            ScreenshakeController screenShakeController = GameObject.FindWithTag("MainCamera").GetComponent<ScreenshakeController>();
+            StartCoroutine(screenShakeController.CameraShake(0.15f, 0.1f));
+
+            if (FireballBurn >= 3 && PlayerCanAttack == true)
             {
-                Debug.Log("Has Won");
-                WinUI.SetActive(true);
+                Debug.Log("BURN TEXT HAS RUN");
+
+                enemy.currentHealth -= 0.4f;
+                enemyHealth.fillAmount = enemy.currentHealth / 1;
+
+                Player player = GameObject.FindWithTag("Player").GetComponent<Player>();
+                DiceScript diceScript = GameObject.FindWithTag("Dice").GetComponent<DiceScript>();
+
+                player.currentHealth -= 0.2f;
+                diceScript.playerHealth.fillAmount = player.currentHealth / 1;
+
+                //ConsoleText.text = "You were burned";
+                BurnText.text = "You were burned";
+                Invoke("DamageDisappear", 2f);
+
+                PlayerDamage.text = "2";
+                Invoke("DamageDisappear", 2f);
+
+                PlayerHealthGlow.SetActive(true);
+                Invoke("PlayerGlowDisappear", 0.5f);
+
+                if (enemy.currentHealth < 0.1f/* || enemy.currentHealth > 1f*/) //Player Wins
+                {
+                    Debug.Log("Has Won");
+                    WinUI.SetActive(true);
+                }
+
+                if (player.currentHealth < 0.1f/* || player.currentHealth > 1f*/) //Player Loses
+                {
+                    Debug.Log("Has Lost");
+                    LoseUI.SetActive(true);
+                }
+
+                PlayerCanAttack = false;
             }
 
-            PlayerCanAttack = false;
+            if (FireballBurn < 3 && PlayerCanAttack == true)
+            {
+                enemy.currentHealth -= 0.4f;
+                enemyHealth.fillAmount = enemy.currentHealth / 1;
+
+                //ConsoleText.text = "You were not burned";
+
+
+
+                if (enemy.currentHealth < 0.1f /*|| enemy.currentHealth > 1f*/) //Player Wins
+                {
+                    Debug.Log("Has Won");
+                    WinUI.SetActive(true);
+                }
+
+                PlayerCanAttack = false;
+            }
+
+            Invoke("EnemyTurnChange", 3f);
         }
 
-        Invoke("EnemyTurnChange", 3f);
     }
 
     public void EnemyTurnChange()
@@ -126,7 +153,7 @@ public class AttackScript : MonoBehaviour
         ScreenshakeController screenShakeController = GameObject.FindWithTag("MainCamera").GetComponent<ScreenshakeController>();
         StartCoroutine(screenShakeController.CameraShake(0.1f, 0.05f));
 
-        if (enemy.currentHealth < 0.1f || enemy.currentHealth > 1f) //Player Wins
+        if (enemy.currentHealth < 0.1f /*|| enemy.currentHealth > 1f*/) //Player Wins
         {
             Debug.Log("Has Won");
             WinUI.SetActive(true);
@@ -142,7 +169,8 @@ public class AttackScript : MonoBehaviour
     public void PlayerGlowDisappear()
     {
         PlayerHealthGlow.SetActive(false);
-    }
+        PlayerHealGlow.SetActive(false);
+}
 
     public void EnemyGlowDisappear()
     {
