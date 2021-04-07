@@ -53,15 +53,17 @@ public class AttackScript : MonoBehaviour
             Invoke("EnemyTurnChange", 2f);
             PlayerCanAttack = false;
 
-            if (player.defenceNumber >= 0)
+            if (0 < player.defenceNumber)
             {
                 player.defenceNumber -= 1;
-                playerDefenceText.text = player.defenceNumber.ToString();
+                playerDefenceText.text = player.defenceNumber.ToString();            
+                
+                healGlowText.text = player.defenceNumber.ToString();
+                healGlow.SetActive(true);
+                Invoke("PlayerGlowDisappear", 0.5f);
             }
 
-            healGlowText.text = player.defenceNumber.ToString();
-            healGlow.SetActive(true);
-            Invoke("PlayerGlowDisappear", 0.5f);
+
         }
 
         CombatSystem combatSystem = GameObject.FindWithTag("CombatSystem").GetComponent<CombatSystem>();
@@ -107,14 +109,14 @@ public class AttackScript : MonoBehaviour
                 fillAmountHealth = enemy.currentHealth / enemy.maxHealth;
                 enemyHealth.fillAmount = fillAmountHealth / 1;
 
-                player.currentHealth -= 2f;
+                player.currentHealth -= 3f;
                 playerfillAmountHealth = player.currentHealth / player.maxHealth;
                 diceScript.playerHealth.fillAmount = playerfillAmountHealth / 1;
 
                 BurnText.text = "You were burned";
                 Invoke("DamageDisappear", 2f);
 
-                PlayerDamage.text = "2";
+                PlayerDamage.text = "3";
                 Invoke("DamageDisappear", 2f);
 
                 PlayerHealthGlow.SetActive(true);

@@ -4529,9 +4529,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 'RABID
-
-    WOLF'
+  m_Text: WARG
 --- !u!222 &1821533956
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4883,7 +4881,6 @@ MonoBehaviour:
   PlayerMissText: {fileID: 560706426}
   PlayerDamage: {fileID: 1283500459}
   fillAmountHealth: 0
-  hasUsed: 0
 --- !u!114 &2135885723
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4908,8 +4905,10 @@ MonoBehaviour:
   EnemyHealthGlow: {fileID: 159635535}
   PlayerHealGlow: {fileID: 778469100}
   healGlow: {fileID: 1532109285}
+  healGlowText: {fileID: 1532109287}
   EnemyDamage: {fileID: 1701559741}
   PlayerDamage: {fileID: 1283500459}
   BurnText: {fileID: 70065442}
   playerDefenceText: {fileID: 1224710448}
   fillAmountHealth: 0
+  playerfillAmountHealth: 0
