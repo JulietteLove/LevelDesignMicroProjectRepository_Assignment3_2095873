@@ -358,11 +358,13 @@ MonoBehaviour:
   EnemyHealthGlow: {fileID: 35230947}
   PlayerHealGlow: {fileID: 0}
   healGlow: {fileID: 0}
+  healGlowText: {fileID: 0}
   EnemyDamage: {fileID: 2118091074}
   PlayerDamage: {fileID: 454639392}
   BurnText: {fileID: 1741222437}
   playerDefenceText: {fileID: 0}
   fillAmountHealth: 0
+  playerfillAmountHealth: 0
 --- !u!114 &76689997
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -391,7 +393,6 @@ MonoBehaviour:
   PlayerMissText: {fileID: 279223086}
   PlayerDamage: {fileID: 454639392}
   fillAmountHealth: 0
-  hasUsed: 0
 --- !u!1 &111951095
 GameObject:
   m_ObjectHideFlags: 0
@@ -602,7 +603,7 @@ MonoBehaviour:
   playerName: Player
   attackPower: 2
   defenceNumber: 2
-  currentHealth: 1
+  currentHealth: 10
   maxHealth: 10
 --- !u!1 &267048736
 GameObject:
@@ -2114,8 +2115,8 @@ MonoBehaviour:
   enemyName: Ice Giant
   attackPower: 2
   defenceNumber: 2
-  currentHealth: 1
-  maxHealth: 1
+  currentHealth: 12
+  maxHealth: 12
 --- !u!1 &990317519
 GameObject:
   m_ObjectHideFlags: 0

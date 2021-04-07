@@ -42,7 +42,6 @@ public class AttackScript : MonoBehaviour
         {
             Player player = GameObject.FindWithTag("Player").GetComponent<Player>();
             DiceScript diceScript = GameObject.FindWithTag("Dice").GetComponent<DiceScript>();
-            CombatSystem combatSystem = GameObject.FindWithTag("CombatSystem").GetComponent<CombatSystem>();
 
             player.currentHealth = 10f;
             playerfillAmountHealth = player.currentHealth / player.maxHealth;
@@ -63,9 +62,10 @@ public class AttackScript : MonoBehaviour
             healGlowText.text = player.defenceNumber.ToString();
             healGlow.SetActive(true);
             Invoke("PlayerGlowDisappear", 0.5f);
-
-            //combatSystem.hasUsed = true;
         }
+
+        CombatSystem combatSystem = GameObject.FindWithTag("CombatSystem").GetComponent<CombatSystem>();
+        combatSystem.CanRoll = false;
     }
 
     public void FireballButton()
@@ -75,22 +75,29 @@ public class AttackScript : MonoBehaviour
         if (enemyChange.IsLevel2 == true || enemyChange.IsLevel3 == true) //This code only runs during lvl 2 and 3
         {
             Enemy enemy = GameObject.FindWithTag("Enemy").GetComponent<Enemy>();
-            CombatSystem combatSystem = GameObject.FindWithTag("CombatSystem").GetComponent<CombatSystem>();
-            
-
+           
             FireballBurn = Random.Range(1, 6);
 
-            EnemyHealthGlow.SetActive(true);
-            Invoke("EnemyGlowDisappear", 0.5f);
+            //EnemyHealthGlow.SetActive(true);
+            //Invoke("EnemyGlowDisappear", 0.5f);
 
-            EnemyDamage.text = "4";
-            Invoke("DamageDisappear", 2f);
+            //EnemyDamage.text = "4";
+            //Invoke("DamageDisappear", 2f);
 
-            ScreenshakeController screenShakeController = GameObject.FindWithTag("MainCamera").GetComponent<ScreenshakeController>();
-            StartCoroutine(screenShakeController.CameraShake(0.15f, 0.1f));
+            //ScreenshakeController screenShakeController = GameObject.FindWithTag("MainCamera").GetComponent<ScreenshakeController>();
+            //StartCoroutine(screenShakeController.CameraShake(0.15f, 0.1f));
 
-            if (FireballBurn >= 3 && PlayerCanAttack == true)
+            if (FireballBurn >= 3 && PlayerCanAttack == true) //Player is burned
             {
+                EnemyHealthGlow.SetActive(true);
+                Invoke("EnemyGlowDisappear", 0.5f);
+
+                EnemyDamage.text = "4";
+                Invoke("DamageDisappear", 2f);
+
+                ScreenshakeController screenShakeController = GameObject.FindWithTag("MainCamera").GetComponent<ScreenshakeController>();
+                StartCoroutine(screenShakeController.CameraShake(0.15f, 0.1f));
+
                 Debug.Log("BURN TEXT HAS RUN");
 
                 Player player = GameObject.FindWithTag("Player").GetComponent<Player>();
@@ -128,8 +135,17 @@ public class AttackScript : MonoBehaviour
                 PlayerCanAttack = false;
             }
 
-            if (FireballBurn < 3 && PlayerCanAttack == true)
+            if (FireballBurn < 3 && PlayerCanAttack == true) //Player does not get burned
             {
+                EnemyHealthGlow.SetActive(true);
+                Invoke("EnemyGlowDisappear", 0.5f);
+
+                EnemyDamage.text = "4";
+                Invoke("DamageDisappear", 2f);
+
+                ScreenshakeController screenShakeController = GameObject.FindWithTag("MainCamera").GetComponent<ScreenshakeController>();
+                StartCoroutine(screenShakeController.CameraShake(0.15f, 0.1f));
+
                 enemy.currentHealth -= 4;
                 fillAmountHealth = enemy.currentHealth / enemy.maxHealth;
                 enemyHealth.fillAmount = fillAmountHealth / 1;
@@ -147,6 +163,9 @@ public class AttackScript : MonoBehaviour
             Invoke("EnemyTurnChange", 3f);
         }
 
+        PlayerCanAttack = false;
+        CombatSystem combatSystem = GameObject.FindWithTag("CombatSystem").GetComponent<CombatSystem>();
+        combatSystem.CanRoll = false;
     }
 
     public void EnemyTurnChange()
@@ -190,6 +209,7 @@ public class AttackScript : MonoBehaviour
         Invoke("EnemyTurnChange", 0.5f);
         //ConsoleText.text = "Enemy Turn";
         combatSystem.EnemyCanRoll = true;
+        combatSystem.CanRoll = false;
     }
 
     public void PlayerGlowDisappear()

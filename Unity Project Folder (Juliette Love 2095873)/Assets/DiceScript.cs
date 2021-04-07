@@ -18,6 +18,8 @@ public class DiceScript : MonoBehaviour
     public GameObject playerMissExplanation;
     public bool FirstTimePlayerMiss = true;
 
+    //public bool PlayerMiss = false;
+
     public void ButtonClicked() //CODE DEALING WITH PLAYER ROLL
     {
         ButtonPressed = true;
@@ -26,20 +28,21 @@ public class DiceScript : MonoBehaviour
 
         if (ButtonPressed == true && combatSystem.CanRoll == true)
         {
+            combatSystem.CanRoll = false;
             NumberRolled = Random.Range(1, 6);
             DiceText.GetComponent<UnityEngine.UI.Text>().text = NumberRolled.ToString("F0");
             ButtonPressed = false;
             
             Enemy enemy = GameObject.FindWithTag("Enemy").GetComponent<Enemy>();
 
-            if (enemy.defenceNumber >= NumberRolled) //Enemy defends itself.
+            if (enemy.defenceNumber >= NumberRolled) //Enemy defends itself. Player misses
             {
-                //ConsoleText.text = "Miss";
-                Invoke("EnemyTurn", 2f);
+                //PlayerMiss = true;
+                Invoke("EnemyTurn", 2f); //This is a problem. 2 seconds where button can be used. 
                 combatSystem.PlayerMissText.SetActive(true);
                 Invoke("FeedbackTextDisappear", 2f);
 
-                if (FirstTimePlayerMiss == true)
+                if (FirstTimePlayerMiss == true && playerMissExplanation != null)
                 {
                     playerMissExplanation.SetActive(true);
                     Invoke("MissTextDisappear", 3f);
@@ -49,6 +52,7 @@ public class DiceScript : MonoBehaviour
 
                 AttackScript attackScript = GameObject.FindWithTag("CombatSystem").GetComponent<AttackScript>();
                 attackScript.PlayerCanAttack = true;
+                combatSystem.CanRoll = false;
             }
             
             if (enemy.defenceNumber < NumberRolled) //Option to deal damage to enemy. Attack buttons appear. 
@@ -59,8 +63,6 @@ public class DiceScript : MonoBehaviour
                 AttackScript attackScript = GameObject.FindWithTag("CombatSystem").GetComponent<AttackScript>();
                 attackScript.PlayerCanAttack = true;
             }
-            
-            combatSystem.CanRoll = false;
         }
     }
 

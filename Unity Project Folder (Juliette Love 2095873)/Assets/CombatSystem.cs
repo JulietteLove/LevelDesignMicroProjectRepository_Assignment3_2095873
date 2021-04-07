@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public enum CombatState { START, PLAYERROLL, PLAYERCOMBAT, ENEMYTURN, WON, LOST }
 public class CombatSystem : MonoBehaviour
 {
-    public bool CanRoll = false;
+    public bool CanRoll = true;
     public bool EnemyCanRoll = false;
     public CombatState state;
 
@@ -47,7 +47,7 @@ public class CombatSystem : MonoBehaviour
         if (state == CombatState.PLAYERROLL)
         {
             RollButton.SetActive(true);
-            PlayerRollDice();
+            //PlayerRollDice();
         }
         else
         {
@@ -57,6 +57,7 @@ public class CombatSystem : MonoBehaviour
         if (state == CombatState.PLAYERCOMBAT)
         {
             EnemyCanRoll = false;
+
             Debug.Log("I am in combat");
             EnemyChange enemyChange = GameObject.FindWithTag("EnemyChange").GetComponent<EnemyChange>();
    
@@ -115,15 +116,14 @@ public class CombatSystem : MonoBehaviour
             Player player = GameObject.FindWithTag("Player").GetComponent<Player>();
             Enemy enemy = GameObject.FindWithTag("Enemy").GetComponent<Enemy>();
 
-            if (player.defenceNumber >= diceScript.EnemyNumberRolled) //Enemy defends itself.
+            if (diceScript.EnemyNumberRolled <= player.defenceNumber) //Enemy misses.
             {
-                //diceScript.ConsoleText.text = "Enemy misses";
                 EnemyMissText.SetActive(true);
                 Invoke("FeedbackTextDisappear", 2f);
                 Invoke("PlayerTurn", 2f);
                 Debug.Log("Enemy has missed");
 
-                if(FirstTimeEnemyMiss == true)
+                if(FirstTimeEnemyMiss == true && enemyMissExplanation != null)
                 {
                     enemyMissExplanation.SetActive(true);
                     Invoke("MissTextDisappear", 3f);
@@ -167,12 +167,13 @@ public class CombatSystem : MonoBehaviour
 
         state = CombatState.PLAYERROLL;
         diceScript.ConsoleText.text = "Your turn";
-    }
-
-    void PlayerRollDice()
-    {
         CanRoll = true;
     }
+
+    //void PlayerRollDice()
+    //{
+    //    CanRoll = true;
+    //}
 
     void MissTextDisappear()
     {
