@@ -22,6 +22,7 @@ public class AttackScript : MonoBehaviour
     public GameObject EnemyHealthGlow;
     public GameObject PlayerHealGlow;
     public GameObject healGlow;
+    public Text healGlowText;
 
     public Text EnemyDamage;
     public Text PlayerDamage;
@@ -29,6 +30,7 @@ public class AttackScript : MonoBehaviour
     public Text playerDefenceText;
 
     public float fillAmountHealth;
+    public float playerfillAmountHealth;
 
     //CODE DEALING WITH PLAYER COMBAT STAGE
 
@@ -42,7 +44,8 @@ public class AttackScript : MonoBehaviour
             DiceScript diceScript = GameObject.FindWithTag("Dice").GetComponent<DiceScript>();
             CombatSystem combatSystem = GameObject.FindWithTag("CombatSystem").GetComponent<CombatSystem>();
 
-            player.currentHealth += 0.5f;
+            player.currentHealth = 10f;
+            playerfillAmountHealth = player.currentHealth / player.maxHealth;
             diceScript.playerHealth.fillAmount = player.currentHealth / 1;
 
             PlayerHealGlow.SetActive(true);
@@ -51,13 +54,17 @@ public class AttackScript : MonoBehaviour
             Invoke("EnemyTurnChange", 2f);
             PlayerCanAttack = false;
 
+            if (player.defenceNumber >= 0)
+            {
+                player.defenceNumber -= 1;
+                playerDefenceText.text = player.defenceNumber.ToString();
+            }
+
+            healGlowText.text = player.defenceNumber.ToString();
             healGlow.SetActive(true);
             Invoke("PlayerGlowDisappear", 0.5f);
-            //Defence must be set to 0. With glow to indicate this. 
-            playerDefenceText.text = "0";
-            player.defenceNumber = 0;
 
-            combatSystem.hasUsed = true;
+            //combatSystem.hasUsed = true;
         }
     }
 
@@ -69,6 +76,7 @@ public class AttackScript : MonoBehaviour
         {
             Enemy enemy = GameObject.FindWithTag("Enemy").GetComponent<Enemy>();
             CombatSystem combatSystem = GameObject.FindWithTag("CombatSystem").GetComponent<CombatSystem>();
+            
 
             FireballBurn = Random.Range(1, 6);
 
@@ -85,16 +93,17 @@ public class AttackScript : MonoBehaviour
             {
                 Debug.Log("BURN TEXT HAS RUN");
 
-                enemy.currentHealth -= 0.4f;
-                enemyHealth.fillAmount = enemy.currentHealth / 1;
-
                 Player player = GameObject.FindWithTag("Player").GetComponent<Player>();
                 DiceScript diceScript = GameObject.FindWithTag("Dice").GetComponent<DiceScript>();
+                
+                enemy.currentHealth -= 4;
+                fillAmountHealth = enemy.currentHealth / enemy.maxHealth;
+                enemyHealth.fillAmount = fillAmountHealth / 1;
 
-                player.currentHealth -= 0.2f;
-                diceScript.playerHealth.fillAmount = player.currentHealth / 1;
+                player.currentHealth -= 2f;
+                playerfillAmountHealth = player.currentHealth / player.maxHealth;
+                diceScript.playerHealth.fillAmount = playerfillAmountHealth / 1;
 
-                //ConsoleText.text = "You were burned";
                 BurnText.text = "You were burned";
                 Invoke("DamageDisappear", 2f);
 
@@ -104,13 +113,13 @@ public class AttackScript : MonoBehaviour
                 PlayerHealthGlow.SetActive(true);
                 Invoke("PlayerGlowDisappear", 0.5f);
 
-                if (enemy.currentHealth < 1f/* || enemy.currentHealth > 1f*/) //Player Wins
+                if (enemy.currentHealth < 1f) //Player Wins
                 {
                     Debug.Log("Has Won");
                     WinUI.SetActive(true);
                 }
 
-                if (player.currentHealth < 1f/* || player.currentHealth > 1f*/) //Player Loses
+                if (player.currentHealth < 1f) //Player Loses
                 {
                     Debug.Log("Has Lost");
                     LoseUI.SetActive(true);
@@ -121,14 +130,12 @@ public class AttackScript : MonoBehaviour
 
             if (FireballBurn < 3 && PlayerCanAttack == true)
             {
-                enemy.currentHealth -= 0.4f;
-                enemyHealth.fillAmount = enemy.currentHealth / 1;
-
-                //ConsoleText.text = "You were not burned";
-
+                enemy.currentHealth -= 4;
+                fillAmountHealth = enemy.currentHealth / enemy.maxHealth;
+                enemyHealth.fillAmount = fillAmountHealth / 1;
 
 
-                if (enemy.currentHealth < 1f /*|| enemy.currentHealth > 1f*/) //Player Wins
+                if (enemy.currentHealth < 1f) //Player Wins
                 {
                     Debug.Log("Has Won");
                     WinUI.SetActive(true);
@@ -158,11 +165,9 @@ public class AttackScript : MonoBehaviour
 
         EnemyChange enemyChange = GameObject.FindWithTag("EnemyChange").GetComponent<EnemyChange>();
 
-
         enemy.currentHealth -= player.attackPower;
-        fillAmountHealth = enemy.currentHealth / 10;
+        fillAmountHealth = enemy.currentHealth / enemy.maxHealth;
         enemyHealth.fillAmount = fillAmountHealth / 1;
-
 
 
         EnemyHealthGlow.SetActive(true);

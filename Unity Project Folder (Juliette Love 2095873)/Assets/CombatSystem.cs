@@ -30,7 +30,7 @@ public class CombatSystem : MonoBehaviour
 
     public float fillAmountHealth;
 
-    public bool hasUsed = false;
+    //public bool hasUsed = false;
 
     void Start()
     {
@@ -59,17 +59,17 @@ public class CombatSystem : MonoBehaviour
             EnemyCanRoll = false;
             Debug.Log("I am in combat");
             EnemyChange enemyChange = GameObject.FindWithTag("EnemyChange").GetComponent<EnemyChange>();
-
-            if (hasUsed == false && HealButton != null)
-            {
-                HealButton.SetActive(true);
-            }       
+   
  
             if (FireballAttackButton != null)
             {
                 FireballAttackButton.SetActive(true);
             }
 
+            if (/*hasUsed == false && */HealButton != null)
+            {
+                HealButton.SetActive(true);
+            }    
             MeleeAttackButton.SetActive(true);
         }
 
@@ -83,6 +83,7 @@ public class CombatSystem : MonoBehaviour
             if (FireballAttackButton != null)
             {
                 FireballAttackButton.SetActive(false);
+                Debug.Log("This code has not run");
             }
 
             MeleeAttackButton.SetActive(false);
