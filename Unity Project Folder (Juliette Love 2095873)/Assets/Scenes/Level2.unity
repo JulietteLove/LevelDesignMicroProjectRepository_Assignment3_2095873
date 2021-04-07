@@ -356,9 +356,13 @@ MonoBehaviour:
   LoseUI: {fileID: 1164867820}
   PlayerHealthGlow: {fileID: 1896250708}
   EnemyHealthGlow: {fileID: 35230947}
+  PlayerHealGlow: {fileID: 0}
+  healGlow: {fileID: 0}
   EnemyDamage: {fileID: 2118091074}
   PlayerDamage: {fileID: 454639392}
   BurnText: {fileID: 1741222437}
+  playerDefenceText: {fileID: 0}
+  fillAmountHealth: 0
 --- !u!114 &76689997
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -379,12 +383,15 @@ MonoBehaviour:
   RollButton: {fileID: 267048736}
   MeleeAttackButton: {fileID: 1128236591}
   FireballAttackButton: {fileID: 1697476670}
+  HealButton: {fileID: 0}
   enemyMissExplanation: {fileID: 852862322}
   FirstTimeEnemyMiss: 1
   PlayerHealthGlow: {fileID: 1896250708}
   EnemyMissText: {fileID: 111951095}
   PlayerMissText: {fileID: 279223086}
   PlayerDamage: {fileID: 454639392}
+  fillAmountHealth: 0
+  hasUsed: 0
 --- !u!1 &111951095
 GameObject:
   m_ObjectHideFlags: 0

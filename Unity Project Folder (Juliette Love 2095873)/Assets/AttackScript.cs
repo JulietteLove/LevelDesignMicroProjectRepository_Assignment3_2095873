@@ -21,10 +21,14 @@ public class AttackScript : MonoBehaviour
     public GameObject PlayerHealthGlow;
     public GameObject EnemyHealthGlow;
     public GameObject PlayerHealGlow;
+    public GameObject healGlow;
 
     public Text EnemyDamage;
     public Text PlayerDamage;
     public Text BurnText;
+    public Text playerDefenceText;
+
+    public float fillAmountHealth;
 
     //CODE DEALING WITH PLAYER COMBAT STAGE
 
@@ -36,6 +40,7 @@ public class AttackScript : MonoBehaviour
         {
             Player player = GameObject.FindWithTag("Player").GetComponent<Player>();
             DiceScript diceScript = GameObject.FindWithTag("Dice").GetComponent<DiceScript>();
+            CombatSystem combatSystem = GameObject.FindWithTag("CombatSystem").GetComponent<CombatSystem>();
 
             player.currentHealth += 0.5f;
             diceScript.playerHealth.fillAmount = player.currentHealth / 1;
@@ -45,6 +50,14 @@ public class AttackScript : MonoBehaviour
 
             Invoke("EnemyTurnChange", 2f);
             PlayerCanAttack = false;
+
+            healGlow.SetActive(true);
+            Invoke("PlayerGlowDisappear", 0.5f);
+            //Defence must be set to 0. With glow to indicate this. 
+            playerDefenceText.text = "0";
+            player.defenceNumber = 0;
+
+            combatSystem.hasUsed = true;
         }
     }
 
@@ -91,13 +104,13 @@ public class AttackScript : MonoBehaviour
                 PlayerHealthGlow.SetActive(true);
                 Invoke("PlayerGlowDisappear", 0.5f);
 
-                if (enemy.currentHealth < 0.1f/* || enemy.currentHealth > 1f*/) //Player Wins
+                if (enemy.currentHealth < 1f/* || enemy.currentHealth > 1f*/) //Player Wins
                 {
                     Debug.Log("Has Won");
                     WinUI.SetActive(true);
                 }
 
-                if (player.currentHealth < 0.1f/* || player.currentHealth > 1f*/) //Player Loses
+                if (player.currentHealth < 1f/* || player.currentHealth > 1f*/) //Player Loses
                 {
                     Debug.Log("Has Lost");
                     LoseUI.SetActive(true);
@@ -115,7 +128,7 @@ public class AttackScript : MonoBehaviour
 
 
 
-                if (enemy.currentHealth < 0.1f /*|| enemy.currentHealth > 1f*/) //Player Wins
+                if (enemy.currentHealth < 1f /*|| enemy.currentHealth > 1f*/) //Player Wins
                 {
                     Debug.Log("Has Won");
                     WinUI.SetActive(true);
@@ -141,19 +154,27 @@ public class AttackScript : MonoBehaviour
     public void MeleeButton()
     {
         Enemy enemy = GameObject.FindWithTag("Enemy").GetComponent<Enemy>();
-        enemy.currentHealth -= 0.2f;
-        enemyHealth.fillAmount = enemy.currentHealth/1;
+        Player player = GameObject.FindWithTag("Player").GetComponent<Player>();
+
+        EnemyChange enemyChange = GameObject.FindWithTag("EnemyChange").GetComponent<EnemyChange>();
+
+
+        enemy.currentHealth -= player.attackPower;
+        fillAmountHealth = enemy.currentHealth / 10;
+        enemyHealth.fillAmount = fillAmountHealth / 1;
+
+
 
         EnemyHealthGlow.SetActive(true);
         Invoke("EnemyGlowDisappear", 0.5f);
 
-        EnemyDamage.text = "2";
+        EnemyDamage.text = player.attackPower.ToString();
         Invoke("DamageDisappear", 2f);
 
         ScreenshakeController screenShakeController = GameObject.FindWithTag("MainCamera").GetComponent<ScreenshakeController>();
         StartCoroutine(screenShakeController.CameraShake(0.1f, 0.05f));
 
-        if (enemy.currentHealth < 0.1f /*|| enemy.currentHealth > 1f*/) //Player Wins
+        if (enemy.currentHealth < 1f /*|| enemy.currentHealth > 1f*/) //Player Wins
         {
             Debug.Log("Has Won");
             WinUI.SetActive(true);
@@ -170,7 +191,8 @@ public class AttackScript : MonoBehaviour
     {
         PlayerHealthGlow.SetActive(false);
         PlayerHealGlow.SetActive(false);
-}
+        healGlow.SetActive(false);
+    }
 
     public void EnemyGlowDisappear()
     {

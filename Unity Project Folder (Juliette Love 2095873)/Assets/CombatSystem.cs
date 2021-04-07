@@ -28,6 +28,10 @@ public class CombatSystem : MonoBehaviour
 
     public Text PlayerDamage;
 
+    public float fillAmountHealth;
+
+    public bool hasUsed = false;
+
     void Start()
     {
         state = CombatState.PLAYERROLL;
@@ -49,20 +53,39 @@ public class CombatSystem : MonoBehaviour
         {
             RollButton.SetActive(false);
         }
-        
-        if (state == CombatState.PLAYERCOMBAT)         
+
+        if (state == CombatState.PLAYERCOMBAT)
         {
             EnemyCanRoll = false;
             Debug.Log("I am in combat");
+            EnemyChange enemyChange = GameObject.FindWithTag("EnemyChange").GetComponent<EnemyChange>();
+
+            if (hasUsed == false && HealButton != null)
+            {
+                HealButton.SetActive(true);
+            }       
+ 
+            if (FireballAttackButton != null)
+            {
+                FireballAttackButton.SetActive(true);
+            }
+
             MeleeAttackButton.SetActive(true);
-            FireballAttackButton.SetActive(true);
-            HealButton.SetActive(true);
         }
+
         else
         {
+            if (HealButton != null)
+            {
+                HealButton.SetActive(false);
+            }
+            
+            if (FireballAttackButton != null)
+            {
+                FireballAttackButton.SetActive(false);
+            }
+
             MeleeAttackButton.SetActive(false);
-            FireballAttackButton.SetActive(false);
-            HealButton.SetActive(false);
         }
 
         if (state == CombatState.ENEMYTURN)
@@ -89,6 +112,7 @@ public class CombatSystem : MonoBehaviour
             
             ScreenshakeController screenShakeController = GameObject.FindWithTag("MainCamera").GetComponent<ScreenshakeController>();
             Player player = GameObject.FindWithTag("Player").GetComponent<Player>();
+            Enemy enemy = GameObject.FindWithTag("Enemy").GetComponent<Enemy>();
 
             if (player.defenceNumber >= diceScript.EnemyNumberRolled) //Enemy defends itself.
             {
@@ -109,21 +133,23 @@ public class CombatSystem : MonoBehaviour
 
             if (player.defenceNumber < diceScript.EnemyNumberRolled) //Deals damage to player.
             {
-                player.currentHealth -= 0.2f;
-                diceScript.playerHealth.fillAmount = player.currentHealth / 1;
+                player.currentHealth -= enemy.attackPower;
+                fillAmountHealth = player.currentHealth / 10;
+                diceScript.playerHealth.fillAmount = fillAmountHealth / 1;
+
                 Invoke("PlayerTurn", 2f);
 
                 PlayerHealthGlow.SetActive(true);
                 Invoke("GlowDisappear", 0.5f);
 
-                PlayerDamage.text = "2";
+                PlayerDamage.text = enemy.attackPower.ToString();
                 Invoke("DamageDisappear", 2f);
 
                 StartCoroutine(screenShakeController.CameraShake(0.1f, 0.05f)); //Screenshake
 
                 Debug.Log("Enemy has hit");
 
-                if (player.currentHealth < 0.1f/* || player.currentHealth > 1f*/) //Player Loses
+                if (player.currentHealth < 1f/* || player.currentHealth > 1f*/) //Player Loses
                 {
                     Debug.Log("Has Lost");
                     LoseUI.SetActive(true);

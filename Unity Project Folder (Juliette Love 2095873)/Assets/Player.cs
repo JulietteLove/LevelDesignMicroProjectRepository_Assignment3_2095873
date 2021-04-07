@@ -5,18 +5,9 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public string playerName;
-    public int attackPower;
+    public float attackPower;
     public int defenceNumber;
-    public float currentHealth = 1;
+    public float currentHealth;
     public int maxHealth;
 
-    void Start()
-    {
-        
-    }
-
-    void Update()
-    {
-
-    }
 }
